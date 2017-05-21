@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 
 import json
 import os
@@ -187,7 +187,7 @@ class Gtasks(object):
         return TaskList(response.json(), self)
     
     def push_updates(self):
-        for task_list in self._list_index.values():
+        for task_list in list(self._list_index.values()):
             task_list.push_updates()
             task_list.push_task_updates()
 

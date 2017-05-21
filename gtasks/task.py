@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 
 import re
 from contextlib import contextmanager
@@ -118,5 +118,5 @@ class Task(GtaskObject):
             return None
 
     def __unicode__(self):
-        mark = u'\u2713' if self.complete else u' ' # u2713 is a checkmark
-        return u'({}) {}'.format(mark, self.title)
+        mark = '\u2713' if self.complete else ' ' # u2713 is a checkmark
+        return '({}) {}'.format(mark, self.title)

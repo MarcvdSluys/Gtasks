@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 
 import json
 from contextlib import contextmanager
@@ -108,7 +108,7 @@ class GtaskObject(object):
         return self._dict['id']
 
     def __unicode__(self):
-        return u'{}'.format(self.title)
+        return '{}'.format(self.title)
 
     def __str__(self):
         return unicode_to_str(self.__unicode__())

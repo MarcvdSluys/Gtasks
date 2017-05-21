@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 
 from contextlib import contextmanager
 
@@ -31,7 +31,7 @@ class TaskList(GtaskObject):
                 self._dict['id'], completion_date, parent)
 
     def push_task_updates(self):
-        for task in self._task_index.values():
+        for task in list(self._task_index.values()):
             task.push_updates()
 
     def pull_task_updates(self):
@@ -58,7 +58,7 @@ class TaskList(GtaskObject):
         del self._gtasks._list_index[self._dict['id']]
         try:
             del self._gtasks._list_index[title]
-            for other_list in self._gtasks._list_index.values():
+            for other_list in list(self._gtasks._list_index.values()):
                 if other_list._dict['title'] == title:
                     self._gtasks._list_index[title] = other_list
                     break

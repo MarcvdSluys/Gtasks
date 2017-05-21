@@ -13,6 +13,6 @@ def unicode_to_str(uni):
 
 def compatible_input(prompt=''):
     if sys.version_info[0] == 2:
-        return raw_input(prompt)
-    else:
         return input(prompt)
+    else:
+        return eval(input(prompt))
