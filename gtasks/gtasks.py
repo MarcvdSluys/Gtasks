@@ -13,23 +13,24 @@ from gtasks.misc import compatible_input
 from gtasks.task import Task
 from gtasks.tasklist import TaskList
 
+
 class Gtasks(object):
     SCOPE = ['https://www.googleapis.com/auth/tasks',
-            'https://www.googleapis.com/auth/tasks.readonly']
+             'https://www.googleapis.com/auth/tasks.readonly']
     AUTH_URL = 'https://accounts.google.com/o/oauth2/auth'
     TOKEN_URL = 'https://accounts.google.com/o/oauth2/token'
     LISTS_URL = 'https://www.googleapis.com/tasks/v1/users/@me/lists'
     TASKS_URL = 'https://www.googleapis.com/tasks/v1/lists/{}/tasks/'
 
     def __init__(self, identifier='default', auto_push=True, auto_pull=False,
-            open_browser=True, force_login=False, credentials_location=None):
+                 open_browser=True, force_login=False, credentials_location=None):
         self.identifier = identifier
         self.auto_push = auto_push
         self.auto_pull = auto_pull
         self.open_browser = open_browser
         self.force_login = force_login
         self.credentials_location = (credentials_location or
-                os.path.join(os.path.dirname(__file__), 'credentials.json'))
+                                     os.path.join(os.path.dirname(__file__), 'credentials.json'))
         self._list_index = {}
         self._task_index = {}
         self._updates = set()
@@ -50,30 +51,30 @@ class Gtasks(object):
     def authenticate(self):
         extra = {'client_id': self.client_id, 'client_secret': self.client_secret}
         self.google = OAuth2Session(self.client_id, scope=Gtasks.SCOPE,
-                redirect_uri=self.redirect_uri, auto_refresh_kwargs=extra,
-                auto_refresh_url=Gtasks.TOKEN_URL, token_updater=lambda t: None)
+                                    redirect_uri=self.redirect_uri, auto_refresh_kwargs=extra,
+                                    auto_refresh_url=Gtasks.TOKEN_URL, token_updater=lambda t: None)
 
         refresh_token = keyring.get_password('gtasks.py', self.identifier)
         if refresh_token and not self.force_login:
             self.google.refresh_token(Gtasks.TOKEN_URL, refresh_token)
         else:
             authorization_url, __ = self.google.authorization_url(Gtasks.AUTH_URL,
-                    access_type='offline', approval_prompt='force')
+                                                                  access_type='offline', approval_prompt='force')
 
             if self.open_browser:
                 webbrowser.open_new_tab(authorization_url)
                 prompt = ('The following URL has been opened in your web browser:'
-                        '\n\n{}\n\nPlease paste the response code below:\n')
+                          '\n\n{}\n\nPlease paste the response code below:\n')
             else:
                 prompt = ('Please copy the following URL into your web browser:'
-                        '\n\n{}\n\nPlease paste the response code below:\n')
+                          '\n\n{}\n\nPlease paste the response code below:\n')
             redirect_response = compatible_input(prompt.format(authorization_url))
             print('Thank you!')
 
             tokens = self.google.fetch_token(Gtasks.TOKEN_URL,
-                    client_secret=self.client_secret, code=redirect_response)
+                                             client_secret=self.client_secret, code=redirect_response)
             keyring.set_password('gtasks.py', self.identifier,
-                    tokens['refresh_token'])
+                                 tokens['refresh_token'])
 
     def _download_items(self, url, params, item_type, item_index, max_results):
         results = []
@@ -99,9 +100,9 @@ class Gtasks(object):
         return results
 
     def get_tasks(self, include_completed=True, due_min=None, due_max=None,
-            task_list='@default', max_results=float('inf'), updated_min=None,
-            completed_min=None, completed_max=None, include_deleted=False,
-            include_hidden=False):
+                  task_list='@default', max_results=float('inf'), updated_min=None,
+                  completed_min=None, completed_max=None, include_deleted=False,
+                  include_hidden=False):
         params = {}
         if not include_completed:
             params['showCompleted'] = include_completed
@@ -125,11 +126,11 @@ class Gtasks(object):
         else:
             url = Gtasks.TASKS_URL.format(self.get_list(task_list).id)
         return self._download_items(url, params, Task, self._task_index,
-                max_results)
+                                    max_results)
 
     def get_lists(self, max_results=float('inf')):
         return self._download_items(Gtasks.LISTS_URL, {}, TaskList,
-                self._list_index, max_results)
+                                    self._list_index, max_results)
 
     def get_task(self, task_id, list_id='@default'):
         if task_id in self._task_index:
@@ -151,7 +152,7 @@ class Gtasks(object):
             return self._list_index[name_or_id]
 
     def new_task(self, title='', due_date=None, notes='', complete=False,
-            task_list='@default', completion_date=None, parent=None):
+                 task_list='@default', completion_date=None, parent=None):
         if task_list != '@default':
             task_list = self.get_list(task_list).id
         url = Gtasks.TASKS_URL.format(task_list)
@@ -182,7 +183,7 @@ class Gtasks(object):
         if title:
             body['title'] = title
         response = self.google.post(Gtasks.LISTS_URL, data=json.dumps(body),
-                headers=header)
+                                    headers=header)
         response.raise_for_status()
         return TaskList(response.json(), self)
     

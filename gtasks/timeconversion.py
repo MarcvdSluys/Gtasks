@@ -6,13 +6,15 @@ DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S.000Z'
 DATE_FORMAT = '%Y-%m-%dT00:00:00.000Z'
 DPLUS_FORMAT = '%Y-%m-%dT00:01:00.000Z'
 
+
 def valid_rfcformat(potential):
     try:
         dt.datetime.strptime(potential, DATETIME_FORMAT)
         return True
-    except:
+    except Exception:
         return False
 
+    
 def to_rfc3339(unknown):
     if hasattr(unknown, 'timetuple'):
         if hasattr(unknown, 'tzinfo') and unknown.tzinfo is not None:
@@ -29,10 +31,12 @@ def to_rfc3339(unknown):
     else:
         raise RFC3339ConversionError(unknown)
 
+    
 def from_rfc3339(rfc3339):
     time_tuple = time.strptime(rfc3339, DATETIME_FORMAT)
     utc_timestamp = calendar.timegm(time_tuple) 
     return dt.datetime.fromtimestamp(utc_timestamp)
+
 
 def to_date_rfc3339(unknown, plus_a_min=False):
     if plus_a_min:
@@ -48,8 +52,10 @@ def to_date_rfc3339(unknown, plus_a_min=False):
     else:
         raise RFC3339ConversionError(unknown)
 
+    
 def from_date_rfc3339(rfc3339):
     return dt.datetime.strptime(rfc3339, DATE_FORMAT).date()
+
 
 class RFC3339ConversionError(Exception):
     def __str__(self, culprit):

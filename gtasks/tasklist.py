@@ -4,6 +4,7 @@ from contextlib import contextmanager
 
 from gtasks.gtaskobject import GtaskObject
 
+
 class TaskList(GtaskObject):
     CLEAR_URL = 'https://www.googleapis.com/tasks/v1/lists/{}/clear'
 
@@ -16,26 +17,26 @@ class TaskList(GtaskObject):
         self._task_index = {}
 
     def get_tasks(self, include_completed=True, due_min=None, due_max=None,
-            max_results=float('inf'), updated_min=None, completed_min=None,
-            completed_max=None, include_deleted=False, include_hidden=False):
+                  max_results=float('inf'), updated_min=None, completed_min=None,
+                  completed_max=None, include_deleted=False, include_hidden=False):
         return self._gtasks.get_tasks(include_completed, due_min, due_max,
-            self._dict['id'], max_results, updated_min, completed_min,
-            completed_max, include_deleted, include_hidden)
+                                      self._dict['id'], max_results, updated_min, completed_min,
+                                      completed_max, include_deleted, include_hidden)
 
     def get_task(self, task_id):
         return self._gtasks.get_task(task_id, self._dict['id'])
 
     def new_task(self, title='', due_date=None, notes='', complete=False,
-            completion_date=None, parent=None):
+                 completion_date=None, parent=None):
         return self._gtasks.new_task(title, due_date, notes, complete,
-                self._dict['id'], completion_date, parent)
+                                     self._dict['id'], completion_date, parent)
 
     def push_task_updates(self):
         for task in list(self._task_index.values()):
             task.push_updates()
 
     def pull_task_updates(self):
-        self.get_tasks() # TODO: need smarter pull's involving update_min
+        self.get_tasks()  # TODO: need smarter pull's involving update_min
 
     def clear(self):
         url = TaskList.CLEAR_URL.format(self._dict['id'])

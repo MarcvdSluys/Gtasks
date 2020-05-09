@@ -6,6 +6,7 @@ from contextlib import contextmanager
 import gtasks.timeconversion as tc
 from gtasks.misc import unicode_to_str, raise_for_type
 
+
 class GtaskObject(object):
     def __init__(self, item_dict, gtasks):
         self._dict = item_dict
@@ -22,8 +23,8 @@ class GtaskObject(object):
     def push_updates(self):
         if self._update_body:
             response = self._gtasks.google.patch(self._dict['selfLink'],
-                    headers=self._update_headers, params=self._update_params,
-                    data=json.dumps(self._update_body))
+                                                 headers=self._update_headers, params=self._update_params,
+                                                 data=json.dumps(self._update_body))
             response.raise_for_status()
             self._dict = response.json()
             self._update_body.clear()

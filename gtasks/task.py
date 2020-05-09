@@ -8,6 +8,7 @@ from gtasks.gtaskobject import GtaskObject
 from gtasks.misc import raise_for_type
 from gtasks.tasklist import TaskList
 
+
 class Task(GtaskObject):
     LIST_REGEX = re.compile('lists/(\w+)/tasks')
 
@@ -118,5 +119,5 @@ class Task(GtaskObject):
             return None
 
     def __unicode__(self):
-        mark = '\u2713' if self.complete else ' ' # u2713 is a checkmark
+        mark = '\u2713' if self.complete else ' '  # u2713 is a checkmark
         return '({}) {}'.format(mark, self.title)
